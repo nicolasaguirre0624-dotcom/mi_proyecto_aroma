@@ -1,0 +1,2 @@
+# Sistema de Gestión - Tienda de Aromas (Aroma)
+Desarrollo en PHP aplicando Programación Orientada a Objetos (POO), arquitectura MVC, encapsulamiento, herencia y polimorfismo conectado a base de datos MySQL.
