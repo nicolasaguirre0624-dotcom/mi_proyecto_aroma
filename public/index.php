@@ -27,7 +27,7 @@ $productos = $controlador->index();
             <th>Precio</th>
             <th>Stock</th>
         </tr>
-        <?php while ($row = $productos->fetch_assoc()): ?>
+       <?php while ($row = $productos->fetch(PDO::FETCH_ASSOC)): ?>
         <tr>
             <td><?php echo $row['idproducto']; ?></td>
             <td><?php echo $row['nombre']; ?></td>
