@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../app/controllers/ProductoController.php';
+require_once __DIR__ . '/../app/Controllers/ProductoController.php';
 
 $controlador = new ProductoController();
 $productos = $controlador->index();
@@ -27,14 +27,20 @@ $productos = $controlador->index();
             <th>Precio</th>
             <th>Stock</th>
         </tr>
-       <?php while ($row = $productos->fetch(PDO::FETCH_ASSOC)): ?>
-        <tr>
-            <td><?php echo $row['idproducto']; ?></td>
-            <td><?php echo $row['nombre']; ?></td>
-            <td>$<?php echo $row['precio']; ?></td>
-            <td><?php echo $row['stock']; ?></td>
-        </tr>
-        <?php endwhile; ?>
+        <?php if (!empty($productos)): ?>
+            <?php foreach ($productos as $row): ?>
+                <tr>
+                    <td><?php echo $row['idproducto']; ?></td>
+                    <td><?php echo $row['nombre']; ?></td>
+                    <td>$<?php echo $row['precio']; ?></td>
+                    <td><?php echo $row['stock']; ?></td>
+                </tr>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="4">No hay productos registrados.</td>
+            </tr>
+        <?php endif; ?>
     </table>
 </body>
 </html>
