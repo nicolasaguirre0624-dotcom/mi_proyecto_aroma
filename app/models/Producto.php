@@ -10,7 +10,6 @@ class Producto {
         $this->conn = $database->conectar();
     }
 
-    // Listar productos desde la base de datos
     public function listar() {
         $query = "SELECT * FROM " . $this->tabla;
         $resultado = $this->conn->query($query);
