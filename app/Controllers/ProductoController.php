@@ -1,10 +1,15 @@
 <?php
-require_once __DIR__ . '/../../models/Producto.php';
+require_once __DIR__ . "/../models/Producto.php";
 
 class ProductoController {
+    private $model;
+
+    public function __construct() {
+        $this->model = new Producto();
+    }
+
     public function index() {
-        $producto = new Producto();
-        return $producto->listar();
+        $productos = $this->model->getAll();
+        require_once __DIR__ . "/../views/producto/index.php";
     }
 }
-?>

@@ -1,30 +1,41 @@
 <?php
-
 class Database {
-    private $host = "localhost";
-    private $db_name = "tienda_aroma";
-    private $username = "root";
-    private $password = "";
-    public $conn;
+    private $host;
+    private $port;
+    private $nombredb;
+    private $user;
+    private $password;
+    private $connection;
 
-    public function getConnection($dbName = null) {
-        $this->conn = null;
+    public function __construct() {
+        $envPath = __DIR__ . "/../.env";
 
-        $databaseName = $dbName ?: $this->db_name;
-
-        try {
-            $this->conn = new PDO(
-                "mysql:host=" . $this->host . ";dbname=" . $databaseName . ";charset=utf8",
-                $this->username,
-                $this->password
-            );
-
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-        } catch (PDOException $exception) {
-            echo "Error de conexión: " . $exception->getMessage();
+        if (file_exists($envPath)) {
+            $env = parse_ini_file($envPath);
+            $this->host = $env['DB_HOST'] ?? 'localhost';
+            $this->port = $env['DB_PORT'] ?? 3306;
+            $this->nombredb = $env['DB_NAME'] ?? '';
+            $this->user = $env['DB_USER'] ?? 'root';
+            $this->password = $env['DB_PASSWORD'] ?? '';
+        } else {
+            $this->host = 'localhost';
+            $this->port = 3306;
+            $this->nombredb = 'mi_proyecto_aroma';
+            $this->user = 'root';
+            $this->password = '';
         }
+    }
 
-        return $this->conn;
+    public function connect() {
+        try {
+            $dsn = "mysql:host={$this->host};port={$this->port};dbname={$this->nombredb};charset=utf8mb4";
+            $this->connection = new PDO($dsn, $this->user, $this->password);
+            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            return $this->connection;
+        } catch (PDOException $e) {
+            die("Error de conexión: " . $e->getMessage());
+        }
     }
 }
+   
