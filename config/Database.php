@@ -7,35 +7,28 @@ class Database {
     private $password;
     private $connection;
 
-    public function __construct() {
-        $envPath = __DIR__ . "/../.env";
+    public function __construct()
+    {
+        $env = parse_ini_file(__DIR__ . "/../.env");
 
-        if (file_exists($envPath)) {
-            $env = parse_ini_file($envPath);
-            $this->host = $env['DB_HOST'] ?? 'localhost';
-            $this->port = $env['DB_PORT'] ?? 3306;
-            $this->nombredb = $env['DB_NAME'] ?? '';
-            $this->user = $env['DB_USER'] ?? 'root';
-            $this->password = $env['DB_PASSWORD'] ?? '';
-        } else {
-            $this->host = 'localhost';
-            $this->port = 3306;
-            $this->nombredb = 'mi_proyecto_aroma';
-            $this->user = 'root';
-            $this->password = '';
-        }
+        $this->host=$env['DB_HOST'];
+        $this->port=$env['DB_PORT'];
+        $this->nombredb=$env['DB_NAME'];
+        $this->user=$env['DB_USER'];
+        $this->password=$env['DB_PASSWORD'];
+       
     }
 
-    public function connect() {
-        try {
-            $dsn = "mysql:host={$this->host};port={$this->port};dbname={$this->nombredb};charset=utf8mb4";
-            $this->connection = new PDO($dsn, $this->user, $this->password);
-            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-            return $this->connection;
-        } catch (PDOException $e) {
-            die("Error de conexión: " . $e->getMessage());
-        }
+  
+    public function connect (){
+        $dsn = "mysql:host={$this->host};port={$this->port};dbname={$this->nombredb}";
+
+        $this->connection = new PDO ($dsn,$this->user,$this->password);
+
+        return $this->connection;
+        
+        $this ->connection->setAttribute(PDO::ATTR_AUTOCOMMIT, PDO::ERRMODE_EXCEPTION);
     }
+    
 }
    

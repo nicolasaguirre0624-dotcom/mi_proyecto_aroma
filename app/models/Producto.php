@@ -10,22 +10,21 @@ class Producto {
         $database = new Database();
         $this->connection = $database->connect();
     }
-    
+
     public function getAll() {
         try {
-            $sql = "SELECT p.idProducto,
-                           p.nombreProducto,
-                           p.precioProducto,
+            $sql = "SELECT p.id,
+                           p.nombre,
+                           p.precio,
                            p.stock,
-                           p.fechaVenc,
-                           m.nombreMarca,
-                           tp.nTipoProduct,
-                           dc.valorComprada
+                           p.id_proveedor,
+                           p.id_categoria,
+                           pr.nombre AS nombre_proveedor,
+                           c.nombre AS nombre_categoria
                     FROM productos p
-                    LEFT JOIN marcas m ON p.idMarca = m.idMarca
-                    LEFT JOIN tipoproducto tp ON p.idTipoProduct = tp.idTipoProduct
-                    LEFT JOIN descripcompra dc ON p.idProducto = dc.idProducto
-                    ORDER BY p.idProducto";
+                    LEFT JOIN proveedor pr ON p.id_proveedor = pr.id
+                    LEFT JOIN categorias c ON p.id_categoria = c.id
+                    ORDER BY p.id";
 
             $consulta = $this->connection->query($sql);
             return $consulta->fetchAll(PDO::FETCH_ASSOC);
@@ -39,19 +38,18 @@ class Producto {
 
     public function getById($id) {
         try {
-            $sql = "SELECT p.idProducto,
-                           p.nombreProducto,
-                           p.precioProducto,
+            $sql = "SELECT p.id,
+                           p.nombre,
+                           p.precio,
                            p.stock,
-                           p.fechaVenc,
-                           m.nombreMarca,
-                           tp.nTipoProduct,
-                           dc.valorComprada
+                           p.id_proveedor,
+                           p.id_categoria,
+                           pr.nombre AS nombre_proveedor,
+                           c.nombre AS nombre_categoria
                     FROM productos p
-                    LEFT JOIN marcas m ON p.idMarca = m.idMarca
-                    LEFT JOIN tipoproducto tp ON p.idTipoProduct = tp.idTipoProduct
-                    LEFT JOIN descripcompra dc ON p.idProducto = dc.idProducto
-                    WHERE p.idProducto = :id";
+                    LEFT JOIN proveedor pr ON p.id_proveedor = pr.id
+                    LEFT JOIN categorias c ON p.id_categoria = c.id
+                    WHERE p.id = :id";
 
             $consulta = $this->connection->prepare($sql);
             $consulta->bindParam(':id', $id, PDO::PARAM_INT);
@@ -65,4 +63,5 @@ class Producto {
             ];
         }
     }
+
 }
