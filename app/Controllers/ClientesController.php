@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . "/../models/Cliente.php";
 
-class ClienteController {
+class ClientesController { 
+
     private $model;
 
     public function __construct() {
@@ -10,6 +11,6 @@ class ClienteController {
 
     public function index() {
         $clientes = $this->model->getAll();
-        require_once __DIR__ . "/../views/cliente/index.php";
+        require_once __DIR__ . "/../views/Cliente/index.php"; 
     }
 }
