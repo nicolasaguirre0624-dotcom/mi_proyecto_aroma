@@ -13,7 +13,22 @@ $ciudadController = new CiudadController();
 
 
 $method = $_SERVER['REQUEST_METHOD'];
-$uri = $_SERVER['REQUEST_URI'];
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$action = $_GET['action'] ?? '';
+
+if ($uri === '/aroma/public/productos' && $method === 'POST') {
+    if ($action === 'eliminar') {
+        $productoController->eliminar();
+    }
+
+    if ($action === 'actualizar') {
+        $productoController->actualizar();
+    }
+}
+
+if ($uri === '/aroma/public/productos' && $method === 'GET' && $action === 'editar') {
+    $productoController->editar();
+}
 
 ?>
 
@@ -37,10 +52,8 @@ $uri = $_SERVER['REQUEST_URI'];
     
     <?php
 
-    if ($method == 'GET' && $uri == '/aroma/public/productos') {
-
+    if ($method === 'GET' && $uri === '/aroma/public/productos') {
         $productoController->index();
-
     }
 
 
