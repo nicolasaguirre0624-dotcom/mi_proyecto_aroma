@@ -72,6 +72,24 @@ class Producto {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function crearProducto($nombre, $precio, $stock, $idProveedor, $idCategoria) {
+        try {
+            $sql = "INSERT INTO productos (nombre, precio, stock, id_proveedor, id_categoria)
+                    VALUES (:nombre, :precio, :stock, :id_proveedor, :id_categoria)";
+            $stmt = $this->connection->prepare($sql);
+            return $stmt->execute([
+                ':nombre' => $nombre,
+                ':precio' => $precio,
+                ':stock' => $stock,
+                ':id_proveedor' => $idProveedor,
+                ':id_categoria' => $idCategoria
+            ]);
+        } catch (PDOException $e) {
+            error_log('Error al crear producto: ' . $e->getMessage());
+            return false;
+        }
+    }
+
     // Actualizar producto en la base de datos
     public function actualizarProducto($id, $nombre, $precio, $stock, $idProveedor, $idCategoria) {
         try {
@@ -104,7 +122,7 @@ class Producto {
         }
     }
 
-    // Eliminar producto de forma segura (Cumple con el taller)
+    // Eliminar producto de la base de datos
     public function eliminarProducto($id) {
         try {
             $sql = "DELETE FROM productos WHERE id = :id";

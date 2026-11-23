@@ -42,4 +42,47 @@ class Categoria {
         }
     }
 
+    public function actualizar($id, $nombre, $descripcion) {
+        try {
+            $consulta = $this->connection->prepare(
+                "UPDATE categorias SET nombre = :nombre, descripcion = :descripcion WHERE id = :id"
+            );
+            $consulta->execute([
+                ':nombre' => $nombre,
+                ':descripcion' => $descripcion,
+                ':id' => $id
+            ]);
+            return $consulta->rowCount() > 0 || $this->getById($id) !== false;
+        } catch (PDOException $e) {
+            error_log('Error al actualizar categoría: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function crear($nombre, $descripcion) {
+        try {
+            $consulta = $this->connection->prepare(
+                "INSERT INTO categorias (nombre, descripcion) VALUES (:nombre, :descripcion)"
+            );
+            return $consulta->execute([
+                ':nombre' => $nombre,
+                ':descripcion' => $descripcion
+            ]);
+        } catch (PDOException $e) {
+            error_log('Error al crear categoría: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function eliminar($id) {
+        try {
+            $consulta = $this->connection->prepare("DELETE FROM categorias WHERE id = :id");
+            $consulta->execute([':id' => $id]);
+            return $consulta->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log('Error al eliminar categoría: ' . $e->getMessage());
+            return false;
+        }
+    }
+
 }

@@ -22,17 +22,47 @@ try {
         if (!is_string($tokenEnviado) || !hash_equals($token, $tokenEnviado)) {
             $mensaje = 'No se pudo completar la operación. Recarga la página e intenta de nuevo.';
         } else {
-            $id = filter_var($_POST['id'] ?? null, FILTER_VALIDATE_INT);
+            $accion = $_POST['action'] ?? '';
+            if ($accion === 'crear') {
+                $nombre = trim($_POST['nombre'] ?? '');
+                $precio = $_POST['precio'] ?? '';
+                $stock = filter_var($_POST['stock'] ?? null, FILTER_VALIDATE_INT);
+                $idProveedor = filter_var($_POST['id_proveedor'] ?? null, FILTER_VALIDATE_INT);
+                $idCategoria = filter_var($_POST['id_categoria'] ?? null, FILTER_VALIDATE_INT);
 
-            if ($id === false || $id === null || $id < 1) {
-                $mensaje = 'No se pudo completar la operación: el producto no es válido.';
-            } elseif (($_POST['action'] ?? '') === 'eliminar') {
+                if (
+                    $nombre === ''
+                    || !is_numeric($precio) || (float) $precio < 0
+                    || $stock === false || $stock === null || $stock < 0
+                    || $idProveedor === false || $idProveedor === null || $idProveedor < 1
+                    || $idCategoria === false || $idCategoria === null || $idCategoria < 1
+                ) {
+                    $mensaje = 'No se pudo crear el producto. Verifica los datos ingresados.';
+                } else {
+                    $consulta = $conexion->prepare(
+                        'INSERT INTO productos (nombre, precio, stock, id_proveedor, id_categoria)
+                         VALUES (:nombre, :precio, :stock, :id_proveedor, :id_categoria)'
+                    );
+                    $consulta->execute([
+                        ':nombre' => $nombre,
+                        ':precio' => $precio,
+                        ':stock' => $stock,
+                        ':id_proveedor' => $idProveedor,
+                        ':id_categoria' => $idCategoria
+                    ]);
+                    $mensaje = 'Producto creado correctamente.';
+                }
+            } else {
+                $id = filter_var($_POST['id'] ?? null, FILTER_VALIDATE_INT);
+                if ($id === false || $id === null || $id < 1) {
+                    $mensaje = 'No se pudo completar la operación: el producto no es válido.';
+                } elseif ($accion === 'eliminar') {
                 $consulta = $conexion->prepare('DELETE FROM productos WHERE id = :id');
                 $consulta->execute([':id' => $id]);
                 $mensaje = $consulta->rowCount() > 0
                     ? 'Producto eliminado correctamente.'
                     : 'No se pudo eliminar el producto.';
-            } elseif (($_POST['action'] ?? '') === 'actualizar') {
+                } elseif ($accion === 'actualizar') {
                 $nombre = trim($_POST['nombre'] ?? '');
                 $precio = $_POST['precio'] ?? '';
                 $stock = filter_var($_POST['stock'] ?? null, FILTER_VALIDATE_INT);
@@ -75,6 +105,7 @@ try {
                         $mensaje = 'Producto actualizado correctamente.';
                     }
                 }
+            }
             }
         }
     } elseif ($action === 'editar') {
@@ -154,6 +185,32 @@ function escapar($valor) {
             <a href="gestionar_productos.php">Cancelar</a>
         </form>
     <?php else: ?>
+        <h2>Crear producto</h2>
+        <form action="gestionar_productos.php" method="POST">
+            <input type="hidden" name="token" value="<?= escapar($token) ?>">
+            <input type="hidden" name="action" value="crear">
+            <p>
+                <label for="crear_nombre">Nombre</label>
+                <input id="crear_nombre" name="nombre" type="text" required>
+            </p>
+            <p>
+                <label for="crear_precio">Precio</label>
+                <input id="crear_precio" name="precio" type="number" min="0" step="0.01" required>
+            </p>
+            <p>
+                <label for="crear_stock">Stock</label>
+                <input id="crear_stock" name="stock" type="number" min="0" step="1" required>
+            </p>
+            <p>
+                <label for="crear_id_proveedor">ID del proveedor</label>
+                <input id="crear_id_proveedor" name="id_proveedor" type="number" min="1" required>
+            </p>
+            <p>
+                <label for="crear_id_categoria">ID de la categoría</label>
+                <input id="crear_id_categoria" name="id_categoria" type="number" min="1" required>
+            </p>
+            <button type="submit">Crear producto</button>
+        </form>
         <table border="1" cellpadding="6">
             <thead>
                 <tr>

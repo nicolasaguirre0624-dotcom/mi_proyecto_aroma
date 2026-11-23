@@ -1,5 +1,5 @@
 <h2>Editar producto</h2>
-<form action="/aroma/public/productos?action=actualizar" method="POST">
+<form action="<?= APP_BASE_PATH ?>/productos?action=actualizar" method="POST">
     <input type="hidden" name="id" value="<?= (int) $producto['id'] ?>">
 
     <p>
@@ -24,5 +24,5 @@
     </p>
 
     <button type="submit">Actualizar producto</button>
-    <a href="/aroma/public/productos">Cancelar</a>
+    <a href="<?= APP_BASE_PATH ?>/productos">Cancelar</a>
 </form>

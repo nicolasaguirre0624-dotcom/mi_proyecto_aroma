@@ -30,7 +30,7 @@ class ProductoController {
             && $this->model->eliminarProducto($id);
 
         $resultado = $eliminado ? 'eliminado' : 'no_eliminado';
-        header('Location: /aroma/public/productos?resultado=' . $resultado);
+        header('Location: ' . APP_BASE_PATH . '/productos?resultado=' . $resultado);
         exit();
     }
 
@@ -41,7 +41,7 @@ class ProductoController {
             : false;
 
         if (!$producto || isset($producto['error'])) {
-            header('Location: /aroma/public/productos?resultado=no_actualizado');
+            header('Location: ' . APP_BASE_PATH . '/productos?resultado=no_actualizado');
             exit();
         }
 
@@ -75,7 +75,7 @@ class ProductoController {
         );
 
         $resultado = $actualizado ? 'actualizado' : 'no_actualizado';
-        header('Location: /aroma/public/productos?resultado=' . $resultado);
+        header('Location: ' . APP_BASE_PATH . '/productos?resultado=' . $resultado);
         exit();
     }
 
