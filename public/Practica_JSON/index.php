@@ -66,8 +66,7 @@ $productos = [
   ]
 ];
 
-header('Content-Type: application/json; charset=utf-8');
-echo json_encode(
-  $productos,
-  JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR
-);
+header('Content-Type: text/plain; charset=utf-8');
+foreach ($productos as $producto) {
+    echo json_encode($producto, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR) . PHP_EOL;
+}
