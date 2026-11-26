@@ -3,9 +3,6 @@ session_start();
 
 require_once __DIR__ . '/../config/Database.php';
 
-$conexion = (new Database())->connect();
-$conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
 if (empty($_SESSION['token_gestion_productos'])) {
     $_SESSION['token_gestion_productos'] = bin2hex(random_bytes(32));
 }
@@ -15,8 +12,13 @@ $mensaje = '';
 $producto = null;
 $productos = [];
 $action = $_GET['action'] ?? '';
+$resultado = 'no_completado';
+$operacionExitosa = false;
 
 try {
+    $conexion = (new Database())->connect();
+    $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tokenEnviado = $_POST['token'] ?? '';
         if (!is_string($tokenEnviado) || !hash_equals($token, $tokenEnviado)) {
@@ -38,6 +40,7 @@ try {
                     || $idCategoria === false || $idCategoria === null || $idCategoria < 1
                 ) {
                     $mensaje = 'No se pudo crear el producto. Verifica los datos ingresados.';
+                    $resultado = 'no_creado';
                 } else {
                     $consulta = $conexion->prepare(
                         'INSERT INTO productos (nombre, precio, stock, id_proveedor, id_categoria)
@@ -51,61 +54,73 @@ try {
                         ':id_categoria' => $idCategoria
                     ]);
                     $mensaje = 'Producto creado correctamente.';
+                    $resultado = 'creado';
+                    $operacionExitosa = true;
                 }
             } else {
                 $id = filter_var($_POST['id'] ?? null, FILTER_VALIDATE_INT);
                 if ($id === false || $id === null || $id < 1) {
                     $mensaje = 'No se pudo completar la operación: el producto no es válido.';
+                    $resultado = 'no_completado';
                 } elseif ($accion === 'eliminar') {
-                $consulta = $conexion->prepare('DELETE FROM productos WHERE id = :id');
-                $consulta->execute([':id' => $id]);
-                $mensaje = $consulta->rowCount() > 0
-                    ? 'Producto eliminado correctamente.'
-                    : 'No se pudo eliminar el producto.';
+                    $consulta = $conexion->prepare('DELETE FROM productos WHERE id = :id');
+                    $consulta->execute([':id' => $id]);
+                    $operacionExitosa = $consulta->rowCount() > 0;
+                    $resultado = $operacionExitosa ? 'eliminado' : 'no_eliminado';
+                    $mensaje = $operacionExitosa
+                        ? 'Producto eliminado correctamente.'
+                        : 'No se pudo eliminar el producto.';
                 } elseif ($accion === 'actualizar') {
-                $nombre = trim($_POST['nombre'] ?? '');
-                $precio = $_POST['precio'] ?? '';
-                $stock = filter_var($_POST['stock'] ?? null, FILTER_VALIDATE_INT);
-                $idProveedor = filter_var($_POST['id_proveedor'] ?? null, FILTER_VALIDATE_INT);
-                $idCategoria = filter_var($_POST['id_categoria'] ?? null, FILTER_VALIDATE_INT);
+                    $nombre = trim($_POST['nombre'] ?? '');
+                    $precio = $_POST['precio'] ?? '';
+                    $stock = filter_var($_POST['stock'] ?? null, FILTER_VALIDATE_INT);
+                    $idProveedor = filter_var($_POST['id_proveedor'] ?? null, FILTER_VALIDATE_INT);
+                    $idCategoria = filter_var($_POST['id_categoria'] ?? null, FILTER_VALIDATE_INT);
 
-                if (
-                    $nombre === ''
-                    || !is_numeric($precio)
-                    || (float) $precio < 0
-                    || $stock === false || $stock === null || $stock < 0
-                    || $idProveedor === false || $idProveedor === null || $idProveedor < 1
-                    || $idCategoria === false || $idCategoria === null || $idCategoria < 1
-                ) {
-                    $mensaje = 'No se pudo actualizar el producto. Verifica los datos ingresados.';
-                } else {
-                    $existe = $conexion->prepare('SELECT 1 FROM productos WHERE id = :id');
-                    $existe->execute([':id' => $id]);
-
-                    if (!$existe->fetchColumn()) {
-                        $mensaje = 'No se pudo actualizar el producto porque no existe.';
+                    if (
+                        $nombre === ''
+                        || !is_numeric($precio)
+                        || (float) $precio < 0
+                        || $stock === false || $stock === null || $stock < 0
+                        || $idProveedor === false || $idProveedor === null || $idProveedor < 1
+                        || $idCategoria === false || $idCategoria === null || $idCategoria < 1
+                    ) {
+                        $mensaje = 'No se pudo actualizar el producto. Verifica los datos ingresados.';
+                        $resultado = 'no_actualizado';
                     } else {
-                        $consulta = $conexion->prepare(
-                            'UPDATE productos
-                             SET nombre = :nombre,
-                                 precio = :precio,
-                                 stock = :stock,
-                                 id_proveedor = :id_proveedor,
-                                 id_categoria = :id_categoria
-                             WHERE id = :id'
-                        );
-                        $consulta->execute([
-                            ':nombre' => $nombre,
-                            ':precio' => $precio,
-                            ':stock' => $stock,
-                            ':id_proveedor' => $idProveedor,
-                            ':id_categoria' => $idCategoria,
-                            ':id' => $id
-                        ]);
-                        $mensaje = 'Producto actualizado correctamente.';
+                        $existe = $conexion->prepare('SELECT 1 FROM productos WHERE id = :id');
+                        $existe->execute([':id' => $id]);
+
+                        if (!$existe->fetchColumn()) {
+                            $mensaje = 'No se pudo actualizar el producto porque no existe.';
+                            $resultado = 'no_actualizado';
+                        } else {
+                            $consulta = $conexion->prepare(
+                                'UPDATE productos
+                                 SET nombre = :nombre,
+                                     precio = :precio,
+                                     stock = :stock,
+                                     id_proveedor = :id_proveedor,
+                                     id_categoria = :id_categoria
+                                 WHERE id = :id'
+                            );
+                            $consulta->execute([
+                                ':nombre' => $nombre,
+                                ':precio' => $precio,
+                                ':stock' => $stock,
+                                ':id_proveedor' => $idProveedor,
+                                ':id_categoria' => $idCategoria,
+                                ':id' => $id
+                            ]);
+                            $mensaje = 'Producto actualizado correctamente.';
+                            $resultado = 'actualizado';
+                            $operacionExitosa = true;
+                        }
                     }
+                } else {
+                    $mensaje = 'La acción solicitada no es válida.';
+                    $resultado = 'no_completado';
                 }
-            }
             }
         }
     } elseif ($action === 'editar') {
@@ -133,6 +148,19 @@ try {
 } catch (PDOException $e) {
     error_log('Error al gestionar productos: ' . $e->getMessage());
     $mensaje = 'Ocurrió un error de base de datos. No se pudo completar la operación.';
+    $resultado = 'no_completado';
+    $operacionExitosa = false;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    http_response_code($operacionExitosa ? 200 : 400);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([
+        'success' => $operacionExitosa,
+        'result' => $resultado,
+        'message' => $mensaje
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit();
 }
 
 function escapar($valor) {
@@ -145,6 +173,11 @@ function escapar($valor) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gestión de productos</title>
+    <style>
+        table {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <h1>Gestión de productos</h1>

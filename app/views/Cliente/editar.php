@@ -1,3 +1,9 @@
+<?php
+if (!defined('APP_BASE_PATH') || !isset($cliente) || !is_array($cliente) || isset($cliente['error'])) {
+    http_response_code(404);
+    exit();
+}
+?>
 <h1>Editar cliente #<?= (int) $cliente['id'] ?></h1>
 <form action="<?= APP_BASE_PATH ?>/clientes?action=actualizar" method="POST">
     <input type="hidden" name="id" value="<?= (int) $cliente['id'] ?>">

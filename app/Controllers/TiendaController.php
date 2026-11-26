@@ -24,7 +24,7 @@ class TiendaController {
             'good girl' => ['archivo' => 'good-girl.jpg', 'codigo' => '8411061819838'],
             'one million' => ['archivo' => 'one-million.jpg', 'codigo' => '3349666007921']
         ];
-        $directorioImagenes = __DIR__ . '/../../public/images/perfumes/';
+        $directorioImagenes = __DIR__ . '/../../public/img/imagenes/perfumes/';
         foreach ($productos as &$producto) {
             $nombre = strtolower($producto['nombre'] ?? '');
             foreach ($imagenes as $nombreProducto => $imagen) {
@@ -33,7 +33,7 @@ class TiendaController {
                 }
 
                 if (is_file($directorioImagenes . $imagen['archivo'])) {
-                    $producto['image_url'] = APP_PUBLIC_PATH . '/images/perfumes/' . $imagen['archivo'];
+                    $producto['image_url'] = APP_PUBLIC_PATH . '/img/imagenes/perfumes/' . $imagen['archivo'];
                     $producto['image_source'] = 'https://world.openbeautyfacts.org/product/' . $imagen['codigo'];
                     $producto['image_license'] = 'https://creativecommons.org/licenses/by-sa/3.0/';
                 }

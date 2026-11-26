@@ -45,8 +45,10 @@ class ProveedorController {
             && ($correo === '' || filter_var($correo, FILTER_VALIDATE_EMAIL));
         $creado = $valido && $this->model->crear($nombre, $direccion, $telefono, $correo);
         $resultado = $creado ? 'creado' : 'no_creado';
-        header('Location: ' . APP_BASE_PATH . '/proveedores?resultado=' . $resultado);
-        exit();
+        $mensaje = $creado
+            ? 'Proveedor creado correctamente.'
+            : 'No se pudo crear el proveedor. Verifica los datos.';
+        JsonResponse::send($creado, $resultado, $mensaje);
     }
 
     public function actualizar() {
@@ -62,8 +64,10 @@ class ProveedorController {
         $actualizado = $valido
             && $this->model->actualizar($id, $nombre, $direccion, $telefono, $correo);
         $resultado = $actualizado ? 'actualizado' : 'no_actualizado';
-        header('Location: ' . APP_BASE_PATH . '/proveedores?resultado=' . $resultado);
-        exit();
+        $mensaje = $actualizado
+            ? 'Proveedor actualizado correctamente.'
+            : 'No se pudo actualizar el proveedor. Verifica los datos.';
+        JsonResponse::send($actualizado, $resultado, $mensaje);
     }
 
     public function eliminar() {
@@ -72,7 +76,9 @@ class ProveedorController {
             && $id !== false && $id !== null && $id > 0
             && $this->model->eliminar($id);
         $resultado = $eliminado ? 'eliminado' : 'no_eliminado';
-        header('Location: ' . APP_BASE_PATH . '/proveedores?resultado=' . $resultado);
-        exit();
+        $mensaje = $eliminado
+            ? 'Proveedor eliminado correctamente.'
+            : 'No se pudo eliminar el proveedor.';
+        JsonResponse::send($eliminado, $resultado, $mensaje);
     }
 }

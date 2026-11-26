@@ -1,3 +1,9 @@
+<?php
+if (!defined('APP_BASE_PATH') || !isset($ciudad) || !is_array($ciudad) || isset($ciudad['error'])) {
+    http_response_code(404);
+    exit();
+}
+?>
 <h1>Editar ciudad #<?= (int) $ciudad['id'] ?></h1>
 <form action="<?= APP_BASE_PATH ?>/ciudades?action=actualizar" method="POST">
     <input type="hidden" name="id" value="<?= (int) $ciudad['id'] ?>">

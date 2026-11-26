@@ -120,20 +120,3 @@
         <?php endif; ?>
     </aside>
 </div>
-
-<footer class="image-credits">
-    <details>
-        <summary>Créditos de las imágenes</summary>
-        <ul>
-            <?php foreach ($productos as $producto): ?>
-                <?php if (!empty($producto['image_source'])): ?>
-                    <li>
-                        <?= htmlspecialchars($producto['nombre'] ?? '', ENT_QUOTES, 'UTF-8') ?>:
-                        <a href="<?= htmlspecialchars($producto['image_source'], ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener noreferrer">Open Beauty Facts</a>
-                        · <a href="<?= htmlspecialchars($producto['image_license'], ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a>
-                    </li>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </ul>
-    </details>
-</footer>

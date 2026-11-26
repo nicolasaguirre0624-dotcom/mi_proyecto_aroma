@@ -1,3 +1,9 @@
+<?php
+if (!defined('APP_BASE_PATH') || !isset($compra) || !is_array($compra) || isset($compra['error'])) {
+    http_response_code(404);
+    exit();
+}
+?>
 <h1>Editar compra #<?= (int) $compra['idCompra'] ?></h1>
 <form action="<?= APP_BASE_PATH ?>/compras?action=actualizar" method="POST">
     <input type="hidden" name="id" value="<?= (int) $compra['idCompra'] ?>">

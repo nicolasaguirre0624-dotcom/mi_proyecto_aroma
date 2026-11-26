@@ -46,8 +46,10 @@ class ProductoController {
         );
 
         $resultado = $creado ? 'creado' : 'no_creado';
-        header('Location: ' . APP_BASE_PATH . '/productos?resultado=' . $resultado);
-        exit();
+        $mensaje = $creado
+            ? 'Producto creado correctamente.'
+            : 'No se pudo crear el producto. Verifica los datos.';
+        JsonResponse::send($creado, $resultado, $mensaje);
     }
 
     public function eliminar() {
@@ -59,8 +61,10 @@ class ProductoController {
             && $this->model->eliminarProducto($id);
 
         $resultado = $eliminado ? 'eliminado' : 'no_eliminado';
-        header('Location: ' . APP_BASE_PATH . '/productos?resultado=' . $resultado);
-        exit();
+        $mensaje = $eliminado
+            ? 'Producto eliminado correctamente.'
+            : 'No se pudo eliminar el producto.';
+        JsonResponse::send($eliminado, $resultado, $mensaje);
     }
 
     public function editar() {
@@ -104,8 +108,10 @@ class ProductoController {
         );
 
         $resultado = $actualizado ? 'actualizado' : 'no_actualizado';
-        header('Location: ' . APP_BASE_PATH . '/productos?resultado=' . $resultado);
-        exit();
+        $mensaje = $actualizado
+            ? 'Producto actualizado correctamente.'
+            : 'No se pudo actualizar el producto. Verifica los datos.';
+        JsonResponse::send($actualizado, $resultado, $mensaje);
     }
 
 }

@@ -40,8 +40,10 @@ class CiudadController {
         $valido = $_SERVER['REQUEST_METHOD'] === 'POST' && $nombre !== '';
         $creado = $valido && $this->model->crear($nombre);
         $resultado = $creado ? 'creado' : 'no_creado';
-        header('Location: ' . APP_BASE_PATH . '/ciudades?resultado=' . $resultado);
-        exit();
+        $mensaje = $creado
+            ? 'Ciudad creada correctamente.'
+            : 'No se pudo crear la ciudad. Verifica los datos.';
+        JsonResponse::send($creado, $resultado, $mensaje);
     }
 
     public function actualizar() {
@@ -51,8 +53,10 @@ class CiudadController {
             && $id !== false && $id !== null && $id > 0 && $nombre !== '';
         $actualizado = $valido && $this->model->actualizar($id, $nombre);
         $resultado = $actualizado ? 'actualizado' : 'no_actualizado';
-        header('Location: ' . APP_BASE_PATH . '/ciudades?resultado=' . $resultado);
-        exit();
+        $mensaje = $actualizado
+            ? 'Ciudad actualizada correctamente.'
+            : 'No se pudo actualizar la ciudad. Verifica los datos.';
+        JsonResponse::send($actualizado, $resultado, $mensaje);
     }
 
     public function eliminar() {
@@ -61,7 +65,9 @@ class CiudadController {
             && $id !== false && $id !== null && $id > 0
             && $this->model->eliminar($id);
         $resultado = $eliminado ? 'eliminado' : 'no_eliminado';
-        header('Location: ' . APP_BASE_PATH . '/ciudades?resultado=' . $resultado);
-        exit();
+        $mensaje = $eliminado
+            ? 'Ciudad eliminada correctamente.'
+            : 'No se pudo eliminar la ciudad.';
+        JsonResponse::send($eliminado, $resultado, $mensaje);
     }
 }

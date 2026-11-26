@@ -2,4 +2,10 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
-RewriteRule ^(productos|clientes|proveedores|ciudades|categorias|compras|login|logout)/?$ index.php [QSA,L]
+RewriteRule ^public/images/(.*)$ public/assets/images/$1 [L]
+RewriteRule ^public/Practica_JSON/?(.*)$ public/practicas/json/$1 [NC,L]
+RewriteRule ^public/ejercicios/?(.*)$ public/practicas/ejercicios/$1 [NC,L]
+RewriteRule ^(productos|clientes|proveedores|ciudades|categorias|compras)(/(crear|editar|actualizar|eliminar))?/?$ index.php [QSA,L]
+RewriteRule ^api(/.*)?$ index.php [QSA,L]
+RewriteRule ^json/?$ index.php [QSA,L]
+RewriteRule ^(login|logout)/?$ index.php [QSA,L]

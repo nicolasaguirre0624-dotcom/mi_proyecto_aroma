@@ -41,7 +41,16 @@ class CategoriaController {
         $valido = $_SERVER['REQUEST_METHOD'] === 'POST' && $nombre !== '';
         $creado = $valido && $this->model->crear($nombre, $descripcion);
         $resultado = $creado ? 'creado' : 'no_creado';
-        header('Location: ' . APP_BASE_PATH . '/categorias?resultado=' . $resultado);
+        $mensaje = $creado
+            ? 'Categoría creada correctamente.'
+            : 'No se pudo crear la categoría. Verifica los datos.';
+        http_response_code($creado ? 200 : 400);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'success' => $creado,
+            'result' => $resultado,
+            'message' => $mensaje
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         exit();
     }
 
@@ -53,7 +62,16 @@ class CategoriaController {
             && $id !== false && $id !== null && $id > 0 && $nombre !== '';
         $actualizado = $valido && $this->model->actualizar($id, $nombre, $descripcion);
         $resultado = $actualizado ? 'actualizado' : 'no_actualizado';
-        header('Location: ' . APP_BASE_PATH . '/categorias?resultado=' . $resultado);
+        $mensaje = $actualizado
+            ? 'Categoría actualizada correctamente.'
+            : 'No se pudo actualizar la categoría. Verifica los datos.';
+        http_response_code($actualizado ? 200 : 400);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'success' => $actualizado,
+            'result' => $resultado,
+            'message' => $mensaje
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         exit();
     }
 
@@ -63,7 +81,16 @@ class CategoriaController {
             && $id !== false && $id !== null && $id > 0
             && $this->model->eliminar($id);
         $resultado = $eliminado ? 'eliminado' : 'no_eliminado';
-        header('Location: ' . APP_BASE_PATH . '/categorias?resultado=' . $resultado);
+        $mensaje = $eliminado
+            ? 'Categoría eliminada correctamente.'
+            : 'No se pudo eliminar la categoría.';
+        http_response_code($eliminado ? 200 : 400);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'success' => $eliminado,
+            'result' => $resultado,
+            'message' => $mensaje
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         exit();
     }
 }

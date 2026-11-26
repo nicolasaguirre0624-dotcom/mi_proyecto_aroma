@@ -33,7 +33,11 @@ class CompraController {
                 $datos['ivaCompra'],
                 $datos['valorCompra']
             );
-        $this->redirigir($creado ? 'creado' : 'no_creado');
+        $resultado = $creado ? 'creado' : 'no_creado';
+        $mensaje = $creado
+            ? 'Compra creada correctamente.'
+            : 'No se pudo crear la compra. Verifica los datos.';
+        JsonResponse::send($creado, $resultado, $mensaje);
     }
 
     public function editar() {
@@ -62,7 +66,11 @@ class CompraController {
                 $datos['ivaCompra'],
                 $datos['valorCompra']
             );
-        $this->redirigir($actualizado ? 'actualizado' : 'no_actualizado');
+        $resultado = $actualizado ? 'actualizado' : 'no_actualizado';
+        $mensaje = $actualizado
+            ? 'Compra actualizada correctamente.'
+            : 'No se pudo actualizar la compra. Verifica los datos.';
+        JsonResponse::send($actualizado, $resultado, $mensaje);
     }
 
     public function eliminar() {
@@ -70,7 +78,16 @@ class CompraController {
         $eliminado = $_SERVER['REQUEST_METHOD'] === 'POST'
             && $id !== false && $id !== null && $id > 0
             && $this->model->eliminar($id);
-        $this->redirigir($eliminado ? 'eliminado' : 'no_eliminado');
+        $resultado = $eliminado ? 'eliminado' : 'no_eliminado';
+        $mensaje = $eliminado
+            ? 'Compra eliminada correctamente.'
+            : 'No se pudo eliminar la compra.';
+        JsonResponse::send($eliminado, $resultado, $mensaje);
+    }
+
+    private function redirigir($resultado) {
+        header('Location: ' . APP_BASE_PATH . '/compras?resultado=' . $resultado);
+        exit();
     }
 
     private function leerDatos() {
@@ -105,8 +122,4 @@ class CompraController {
         ];
     }
 
-    private function redirigir($resultado) {
-        header('Location: ' . APP_BASE_PATH . '/compras?resultado=' . $resultado);
-        exit();
-    }
 }
