@@ -27,7 +27,7 @@
                 <a href="<?= APP_BASE_PATH ?>/categorias?action=editar&amp;id=<?= (int) $categoria['id'] ?>">Editar</a>
                 <form action="<?= APP_BASE_PATH ?>/categorias?action=eliminar" method="POST" style="display:inline-block">
                     <input type="hidden" name="id" value="<?= (int) $categoria['id'] ?>">
-                    <button type="submit" onclick="return confirm('¿Eliminar esta categoría?')">Eliminar</button>
+                    <button type="submit">Eliminar</button>
                 </form>
             </td>
         </tr>

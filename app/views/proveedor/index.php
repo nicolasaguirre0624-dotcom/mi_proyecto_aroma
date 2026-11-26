@@ -30,7 +30,7 @@
             <a href="<?= APP_BASE_PATH ?>/proveedores?action=editar&amp;id=<?= (int) $proveedor['id'] ?>">Editar</a>
             <form action="<?= APP_BASE_PATH ?>/proveedores?action=eliminar" method="POST" style="display:inline-block">
                 <input type="hidden" name="id" value="<?= (int) $proveedor['id'] ?>">
-                <button type="submit" onclick="return confirm('¿Eliminar este proveedor?')">Eliminar</button>
+                <button type="submit">Eliminar</button>
             </form>
         </td>
     </tr>

@@ -12,31 +12,38 @@
     <label>ID de la categoría <input name="id_categoria" type="number" min="1" required></label>
     <button type="submit">Crear producto</button>
 </form>
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Precio</th>
-        <th>Stock</th>
-        <th>Proveedor</th>
-        <th>Categoria</th>
-        <th>Acciones</th>
-    </tr>
-     <?php foreach ($productos as $producto): ?>
-                    <tr>
-                        <td><?= (int) $producto['id'] ?></td>
-                        <td><?= htmlspecialchars($producto['nombre'] ?? '') ?></td>
-                        <td><?= htmlspecialchars($producto['precio'] ?? '') ?></td>
-                        <td><?= htmlspecialchars($producto['stock'] ?? '') ?></td>
-                        <td><?= htmlspecialchars($producto['nombre_proveedor'] ?? 'Sin proveedor') ?></td>
-                        <td><?= htmlspecialchars($producto['nombre_categoria'] ?? 'Sin categoría') ?></td>
-                        <td>
-                            <a href="<?= APP_BASE_PATH ?>/productos?action=editar&amp;id=<?= (int) $producto['id'] ?>">Editar</a>
-                            <form action="<?= APP_BASE_PATH ?>/productos?action=eliminar" method="POST" style="display:inline-block">
-                                <input type="hidden" name="id" value="<?= (int) $producto['id'] ?>">
-                                <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?')">Eliminar</button>
-                            </form>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-    
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Proveedor</th>
+            <th>Categoría</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($productos as $producto): ?>
+            <tr>
+                <td><?= (int) $producto['id'] ?></td>
+                <td><?= htmlspecialchars($producto['nombre'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
+                <td><?= htmlspecialchars($producto['precio'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
+                <td><?= htmlspecialchars($producto['stock'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
+                <td><?= htmlspecialchars($producto['nombre_proveedor'] ?? 'Sin proveedor', ENT_QUOTES, 'UTF-8') ?></td>
+                <td><?= htmlspecialchars($producto['nombre_categoria'] ?? 'Sin categoría', ENT_QUOTES, 'UTF-8') ?></td>
+                <td>
+                    <a href="<?= APP_BASE_PATH ?>/productos?action=editar&amp;id=<?= (int) $producto['id'] ?>">Editar</a>
+                    <form action="<?= APP_BASE_PATH ?>/productos?action=eliminar" method="POST" style="display:inline-block">
+                        <input type="hidden" name="id" value="<?= (int) $producto['id'] ?>">
+                        <button type="submit">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        <?php if (!$productos): ?>
+            <tr><td colspan="7">No hay productos para mostrar.</td></tr>
+        <?php endif; ?>
+    </tbody>
+</table>

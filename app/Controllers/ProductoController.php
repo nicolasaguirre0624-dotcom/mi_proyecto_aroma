@@ -14,11 +14,40 @@ class ProductoController {
         $mensajes = [
             'eliminado' => 'Producto eliminado correctamente.',
             'no_eliminado' => 'No se pudo eliminar el producto.',
+            'creado' => 'Producto creado correctamente.',
+            'no_creado' => 'No se pudo crear el producto. Verifica los datos.',
             'actualizado' => 'Producto actualizado correctamente.',
             'no_actualizado' => 'No se pudo actualizar el producto. Verifica los datos.'
         ];
         $mensaje = $mensajes[$resultado] ?? '';
         require_once __DIR__ . "/../views/producto/index.php";
+    }
+
+    public function crear() {
+        $nombre = trim($_POST['nombre'] ?? '');
+        $precio = filter_input(INPUT_POST, 'precio', FILTER_VALIDATE_FLOAT);
+        $stock = filter_input(INPUT_POST, 'stock', FILTER_VALIDATE_INT);
+        $idProveedor = filter_input(INPUT_POST, 'id_proveedor', FILTER_VALIDATE_INT);
+        $idCategoria = filter_input(INPUT_POST, 'id_categoria', FILTER_VALIDATE_INT);
+
+        $datosValidos = $_SERVER['REQUEST_METHOD'] === 'POST'
+            && $nombre !== ''
+            && $precio !== false && $precio !== null && $precio >= 0
+            && $stock !== false && $stock !== null && $stock >= 0
+            && $idProveedor !== false && $idProveedor !== null && $idProveedor > 0
+            && $idCategoria !== false && $idCategoria !== null && $idCategoria > 0;
+
+        $creado = $datosValidos && $this->model->crearProducto(
+            $nombre,
+            $precio,
+            $stock,
+            $idProveedor,
+            $idCategoria
+        );
+
+        $resultado = $creado ? 'creado' : 'no_creado';
+        header('Location: ' . APP_BASE_PATH . '/productos?resultado=' . $resultado);
+        exit();
     }
 
     public function eliminar() {

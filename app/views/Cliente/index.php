@@ -30,7 +30,7 @@
             <a href="<?= APP_BASE_PATH ?>/clientes?action=editar&amp;id=<?= (int) $cliente['id'] ?>">Editar</a>
             <form action="<?= APP_BASE_PATH ?>/clientes?action=eliminar" method="POST" style="display:inline-block">
                 <input type="hidden" name="id" value="<?= (int) $cliente['id'] ?>">
-                <button type="submit" onclick="return confirm('¿Eliminar este cliente?')">Eliminar</button>
+                <button type="submit">Eliminar</button>
             </form>
         </td>
     </tr>

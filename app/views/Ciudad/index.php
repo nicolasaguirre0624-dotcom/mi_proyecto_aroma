@@ -24,7 +24,7 @@
                 <a href="<?= APP_BASE_PATH ?>/ciudades?action=editar&amp;id=<?= (int) $ciudad['id'] ?>">Editar</a>
                 <form action="<?= APP_BASE_PATH ?>/ciudades?action=eliminar" method="POST" style="display:inline-block">
                     <input type="hidden" name="id" value="<?= (int) $ciudad['id'] ?>">
-                    <button type="submit" onclick="return confirm('¿Eliminar esta ciudad?')">Eliminar</button>
+                    <button type="submit">Eliminar</button>
                 </form>
             </td>
         </tr>
